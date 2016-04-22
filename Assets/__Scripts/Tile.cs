@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Tile : MonoBehaviour {
+public class Tile : PT_MonoBehaviour {
 	//public fields
 	public string   type;
 
