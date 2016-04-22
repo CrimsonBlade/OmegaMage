@@ -22,7 +22,7 @@ public class Tile : MonoBehaviour {
 
 	//Sets the texture of the Tile based on a string
 	//it requires LayoutTiles, so it's commented out for now
-	/*
+
 	public string tex{
 		get {
 			return(_tex);
@@ -38,7 +38,7 @@ public class Tile : MonoBehaviour {
 			}
 		}
 	}
-*/
+
 
 	//uses the 'new' keyword to replace the pos inherited from PT_MonoBehaviour
 	//Without the 'new' keyword, the two properties would conflict
