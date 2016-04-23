@@ -40,15 +40,24 @@ public class Mage : PT_MonoBehaviour {
 	public float		mDragDist = 5; // min dist in pixels to be a drag
 	public float		activeScreenWidth = 1; // % of the screen to use
 
+	public float 		speed = 2; //walk speed for the Mage
+
 	public bool 		_______________;
 
 	public MPhase		mPhase = MPhase.idle;
 	public List<MouseInfo> mouseInfos = new List<MouseInfo>();
 
+	public bool 		walking = false;
+	public Vector3		walkTarget;
+	public Transform	characterTrans;
+
 
 	void Awake () {
 		S = this; // set the mage singleton
 		mPhase = MPhase.idle;
+
+		//find the charaterTrans to rotate with Face()
+		characterTrans = transform.Find("CharacterTrans");
 	}
 
 	void Update(){
@@ -154,6 +163,8 @@ public class Mage : PT_MonoBehaviour {
 	void MouseTap(){
 		// something was tapped like a button
 		if (DEBUG)print ("Mage.MouseTap()");
+
+		WalkTo (lastMouseInfo.loc); //walk to the latest mouseInfo pos
 	}
 
 	void MouseDrag(){
@@ -163,5 +174,55 @@ public class Mage : PT_MonoBehaviour {
 	void MouseDragUp(){
 		// the mouse is released after being dragged 
 		if (DEBUG)print ("Mage.MouseDragUp()");
+	}
+
+	//walk to a specific position. the position.z is always 0
+	public void WalkTo(Vector3 xTarget){
+		walkTarget = xTarget;  //set the point to walk to
+		walkTarget.z = 0;  		//Froce z=0
+		walking = true;			//now the mage is walking
+		Face (walkTarget);		// look in the direction of the walkTarget
+	}
+
+	public void Face(Vector3 poi){ // face toward a point of interest
+		Vector3 delta = poi - pos;  //find vector to the point of interest
+		//use Atan2 to get the rotation around z that points the x-axis of
+		// mage : characterTrans toward poi
+		float rZ = Mathf.Rad2Deg * Mathf.Atan2 (delta.y, delta.x);
+		//set the rotation of characterTrans (doesn't actually rotate mage)
+		characterTrans.rotation = Quaternion.Euler (0, 0, rZ);
+	}
+
+	public void StopWalking(){ //stops the mage from walking
+		walking = false;
+		rigidbody.velocity = Vector3.zero;
+	}
+
+	void FixedUpdate() { //happens every physics step (50 times a second)
+		if (walking) {// if mage is walking
+			if ((walkTarget - pos).magnitude < speed * Time.fixedDeltaTime) {
+				// if mage is very close to walkTarget, just stop there
+				pos = walkTarget;
+				StopWalking ();
+			} else {
+				//otherwise, move to walkTarget
+				rigidbody.velocity = (walkTarget - pos).normalized * speed;
+			}
+		} else {
+			//if not walking, velocity should be 0
+			rigidbody.velocity = Vector3.zero;
+		}
+	}
+
+	void onCollisionEnter(Collision coll){
+		GameObject otherGO = coll.gameObject;
+		//colliding with a wall can also stop walking
+		Tile ti = otherGO.GetComponent<Tile> ();
+		if (ti != null) {
+			if(ti.height > 0){ // if ti.height is > 0
+				// then thsi ti is a wall, and mage should stop
+				StopWalking();
+			}		
+		}
 	}
 }
