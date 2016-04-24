@@ -64,7 +64,14 @@ public class Mage : PT_MonoBehaviour {
 	public float		lineMaxDelta = .5f;
 	public float		lineMaxLength = 8f;
 
+	public GameObject	fireGroundSpellPrefab;
+	public GameObject	earthGroundSpellPrefab;
+	public GameObject	airGroundSpellPrefab;
+	public GameObject	waterGroundSpellPrefab;
+
 	public bool 		_______________;
+
+	protected Transform	spellAnchor;   //the parent transform for all spells
 
 	public float			totalLineLength;
 	public List<Vector3>	linePts; //points to be shown in the line
@@ -98,6 +105,11 @@ public class Mage : PT_MonoBehaviour {
 		//Get the LineRenderer component and disable it
 		liner = GetComponent<LineRenderer> ();
 		liner.enabled = false;
+
+		GameObject saGO = new GameObject("Spell Anchor");
+		//^ create an empty GameObject named "Spell Anchor". when you create a 
+		//  new GameObject this way, it is at p[0,0,0] r[0,0,0] s[1,1,1]
+		spellAnchor = saGO.transform;  //get its transform
 	}
 
 	void Update(){
@@ -267,11 +279,65 @@ public class Mage : PT_MonoBehaviour {
 			//stop walking when the drag is stopped
 			StopWalking();
 		}else{
-			//TODO: cast a spell
+			CastGroundSpell();
 
 			//clear the liner
 			ClearLiner();
 		}
+	}
+
+	void CastGroundSpell(){
+		//there is not a no-element ground spell so return
+		if (selectedElements.Count == 0) return;
+
+		//because this version of the prototype only allows a single element to 
+		//  be selected, we can use that 0th element to pick the spell.
+		switch (selectedElements [0].type) {
+		case ElementType.fire:
+			GameObject fireGO;
+			foreach(Vector3 pt in linePts){//for each vector3 in linePts...
+				//...create an instance of fireGroundSpellPrefab
+				fireGO = Instantiate(fireGroundSpellPrefab) as GameObject;
+				fireGO.transform.parent = spellAnchor;
+				fireGO.transform.position = pt;
+			}
+			break;
+			//other spells
+
+		case ElementType.air:
+			GameObject airGO;
+			foreach(Vector3 pt in linePts){//for each vector3 in linePts...
+				//...create an instance of airGroundSpellPrefab
+				airGO = Instantiate(airGroundSpellPrefab) as GameObject;
+				airGO.transform.parent = spellAnchor;
+				airGO.transform.position = pt;
+			}
+			break;
+
+		case ElementType.earth:
+			GameObject earthGO;
+			foreach(Vector3 pt in linePts){//for each vector3 in linePts...
+				//...create an instance of earthGroundSpellPrefab
+				earthGO = Instantiate(earthGroundSpellPrefab) as GameObject;
+				earthGO.transform.parent = spellAnchor;
+				earthGO.transform.position = pt;
+			}
+			break;
+
+
+		case ElementType.water:
+			GameObject waterGO;
+			foreach(Vector3 pt in linePts){//for each vector3 in linePts...
+				//...create an instance of waterGroundSpellPrefab
+				waterGO = Instantiate(waterGroundSpellPrefab) as GameObject;
+				waterGO.transform.parent = spellAnchor;
+				waterGO.transform.position = pt;
+			}
+			break;
+		}
+
+		//clear the selectedElements; they are consumed by the spell
+		ClearElements ();
 	}
 
 	//walk to a specific position. the position.z is always 0
@@ -458,5 +524,10 @@ public class Mage : PT_MonoBehaviour {
 	public void ClearLiner(){
 		liner.enabled = false;  //disable the LineRenderer
 		linePts.Clear ();		// and clear all linePts
+	}
+
+	//stop any active drag or other mouse input
+	public void ClearInput(){
+		mPhase = MPhase.idle;
 	}
 }

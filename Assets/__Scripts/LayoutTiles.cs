@@ -17,9 +17,11 @@ public class LayoutTiles : MonoBehaviour {
 	// ^ roomNumber as string allows encoding in the XML & rooms 0-f
 	public GameObject tilePrefab; //Prefab for all Tiles
 	public TileTex[]  tileTextures; //A list of named textures for Tiles
+	public GameObject portalPrefab; //prefab for the portals between rooms
 
 	public bool _________________;
 
+	private bool		  firstRoom = true; //is this the first room built?
 	public PT_XMLReader   roomsXMLR;
 	public PT_XMLHashList roomsXML;
 	public Tile[,]		  tiles;
@@ -76,6 +78,21 @@ public class LayoutTiles : MonoBehaviour {
 
 	//Build a room from an XML <room> entry
 	public void BuildRoom(PT_XMLHashtable room){
+		//destroy any old tiles
+		foreach (Transform t in tileAnchor) {//clear out old tiles
+			// ^ you can iterate over a Trandrom to get its children
+			Destroy(t.gameObject);
+		}
+
+		//move the mage out of the way
+		Mage.S.pos = Vector3.left * 1000;
+		// this keeps the mage from accidentally triggering OnTriggerExit() on
+		// a portal. in my tsting, i found that OnTriggerExit was being called 
+		// at strange times.
+		Mage.S.ClearInput (); //Cancel any active mouse input and drags
+
+		string rNumStr = room.att("num");
+
 		//get the texture names for the floors and walls from <room> attributes
 		string floorTexStr = room.att ("floor");
 		string wallTexStr = room.att ("wall");
@@ -96,6 +113,7 @@ public class LayoutTiles : MonoBehaviour {
 		GameObject go;
 		int height;
 		float maxY = roomRows.Length - 1;
+		List<Portal> portals = new List<Portal> ();
 
 		//these loops scan through each tile of each row of the room
 		for (int y = 0; y < roomRows.Length; y++) {
@@ -152,12 +170,72 @@ public class LayoutTiles : MonoBehaviour {
 				//Check for specific entities in the room
 				switch (rawType){
 				case "X": //Starting spot for the Mage
-					Mage.S.pos = ti.pos;//uses the mage singlton
+					//Mage.S.pos = ti.pos;//uses the mage singlton  *** Line no longer used ***
+					if(firstRoom){
+						Mage.S.pos = ti.pos;//uses the mage singlton
+						roomNumber = rNumStr;
+						//  setting roomNumber now keeps any portals form
+						//  moving the mage to them in this first room
+						firstRoom = false;
+					}
+					break;
+
+				case "0": //numbers are room portals (up to F in hexadecimal)
+				case "1": // this allows portals to be placed in Rooms.xml file
+				case "2":
+				case "3":
+				case "4":
+				case "5":
+				case "6":
+				case "7":
+				case "8":
+				case "9":
+				case "A":
+				case "B":
+				case "C":
+				case "D":
+				case "E":
+				case "F":
+					//Instantiate a portal
+					GameObject pGO = Instantiate(portalPrefab) as GameObject;
+					Portal p = pGO.GetComponent<Portal>();
+					p.pos = ti.pos;
+					p.transform.parent = tileAnchor;
+					// attaching this to the tileAnchor means that the Portal 
+					// will be destroyed when a new room is built
+					p.toRoom = rawType;
+					portals.Add(p);
 					break;
 				}
 
 				//more to come here...
 			}
 		}
+
+		//position the Mage
+		foreach (Portal p in portals) {
+			// if p.toRoom is the same as the room number the mage just exited,
+			// then the mage should enter this room through this Portal
+			// alternatively if firstRoom == true and there was no X in the 
+			// room (as a defualt mage starting point), move the mage to this
+			// portal as a backup measure (if, for instance, you want to just
+			// load room number "5")
+			if(p.toRoom == roomNumber || firstRoom){
+				// if there is an x in the room, firstRoom will be set to false
+				// by the time the code gets here
+				Mage.S.StopWalking();  //stop any mage movement
+				Mage.S.pos = p.pos; //move mage to this poratal location
+				//mage maintains their facing from the previous room, so there
+				// is no need to rotate them in order for them to enter this room
+				// facing the right direction
+				p.justArrived = true;
+				// tell the Portal that mage has just arrived
+				firstRoom = false;
+				// stops s 2nd portal in this room from moving the mage to it
+			}
+		}
+
+		// finaly assign the roomNumber
+		roomNumber = rNumStr;
 	}
 }

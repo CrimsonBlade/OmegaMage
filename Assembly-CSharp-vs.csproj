@@ -49,8 +49,10 @@
      <Compile Include="Assets\__Scripts\CameraFollow.cs" />
      <Compile Include="Assets\__Scripts\Element.cs" />
      <Compile Include="Assets\__Scripts\ElementInventoryButton.cs" />
+     <Compile Include="Assets\__Scripts\FireGroundSpell.cs" />
      <Compile Include="Assets\__Scripts\LayoutTiles.cs" />
      <Compile Include="Assets\__Scripts\Mage.cs" />
+     <Compile Include="Assets\__Scripts\Portal.cs" />
      <Compile Include="Assets\__Scripts\ProtoTools\PT_FloatingScore.cs" />
      <Compile Include="Assets\__Scripts\ProtoTools\PT_MonoBehaviour.cs" />
      <Compile Include="Assets\__Scripts\ProtoTools\PT_Mover.cs" />
