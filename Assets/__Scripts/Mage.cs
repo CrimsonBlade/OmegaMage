@@ -10,6 +10,16 @@ public enum MPhase{
 	drag
 }
 
+//the elementType enum
+public enum ElementType{
+	earth,
+	water,
+	air,
+	fire,
+	aether,
+	none
+}
+
 //MouseInfo stores information about the mouse in each frame of interaction
 [System.Serializable]
 public class MouseInfo{
@@ -43,6 +53,11 @@ public class Mage : PT_MonoBehaviour {
 
 	public float 		speed = 2; //walk speed for the Mage
 
+	public GameObject[] elementPrefabs; //the Element_Sphere Prefabs
+	public float		elementRotDist = 0.5f; //Radius of rotation
+	public float		elementRotSpeed = 0.5f; //period of rotation
+	public int			maxNumSelectedElements = 1;  //change later it want to alow multiple element type in a single spell cast
+
 	public bool 		_______________;
 
 	public MPhase		mPhase = MPhase.idle;
@@ -51,6 +66,8 @@ public class Mage : PT_MonoBehaviour {
 	public bool 		walking = false;
 	public Vector3		walkTarget;
 	public Transform	characterTrans;
+
+	public List<Element>  selectedElements = new List<Element>();
 
 
 	void Awake () {
@@ -108,6 +125,12 @@ public class Mage : PT_MonoBehaviour {
 				if(dragDist >= mDragDist){
 					mPhase = MPhase.drag;
 				}
+
+				//however, drag will immediately start after mTapTime if there
+				//are no elements selected
+				if (selectedElements.Count == 0){
+					mPhase = MPhase.drag;
+				}
 			}
 		}
 
@@ -121,6 +144,7 @@ public class Mage : PT_MonoBehaviour {
 				MouseDrag(); //Still dragging
 			}
 		}
+		OrbitSelectedElements ();
 	}
 
 	//pulls info about the Mouse, adds it to mouseInfos, and returns it
@@ -172,10 +196,16 @@ public class Mage : PT_MonoBehaviour {
 	void MouseDrag(){
 		// mouse is being dragged across something 
 		if (DEBUG)print ("Mage.MouseDrag()");
+
+		//continuously walk toward the current mouseInfo pos
+		WalkTo (mouseInfos [mouseInfos.Count - 1].loc);
 	}
 	void MouseDragUp(){
 		// the mouse is released after being dragged 
 		if (DEBUG)print ("Mage.MouseDragUp()");
+
+		//stop walking when the drag is stopped
+		StopWalking();
 	}
 
 	//walk to a specific position. the position.z is always 0
@@ -232,5 +262,68 @@ public class Mage : PT_MonoBehaviour {
 	public void ShowTap(Vector3 loc){
 		GameObject go = Instantiate (tapIndicatorPrefab) as GameObject;
 		go.transform.position = loc;
+	}
+
+	//chooses an element_Sphere of elType and adds it to selectedElements
+	public void SelectElement(ElementType elType){
+		if (elType == ElementType.none) { // if it's the none element...
+			ClearElements();			  // then clear all elements
+			return;						  // and return
+		}
+
+		if (maxNumSelectedElements == 1) {
+			// if only one can be selected, clear the existing one..
+			ClearElements();  //...so it can be replaced
+		}
+
+		//can't select more than maxNumSelectedElements simultaneously
+		if (selectedElements.Count >= maxNumSelectedElements) return;
+
+		//it is okay to add this element
+		GameObject go = Instantiate (elementPrefabs [(int)elType]) as GameObject;
+		// ^note the typecast from ElementType to int in line above
+		Element el = go.GetComponent<Element> ();
+		el.transform.parent = this.transform;
+
+		selectedElements.Add (el); //add el to the list of selectedElements
+	}
+
+	//clears all elements from selectedElements and destroys their GameObjects
+	public void ClearElements(){
+		foreach (Element el in selectedElements) {
+			//destroy each GameObject in the list
+			Destroy(el.gameObject);
+		}
+		selectedElements.Clear (); //and clear the list
+	}
+
+	//called every Update() to orbit the elements around
+	void OrbitSelectedElements(){
+		//if there are none selected, just return
+		if (selectedElements.Count == 0) return;
+
+		Element el;
+		Vector3 vec;
+		float theta0, theta;
+		float tau = Mathf.PI * 2; //tau is 360 deg in radians (i.e. 6.283...)
+
+		//divide the circle into the number of elements that are orbiting
+		float rotPerElement = tau / selectedElements.Count;
+
+		//the base rotation angle (theta0) is set based on time
+		theta0 = elementRotSpeed * Time.time * tau;
+
+		for (int i = 0; i < selectedElements.Count; i++) {
+			//determine the rotation angle for each element
+			theta = theta0 + i*rotPerElement;
+			el = selectedElements[i];
+			//use simple trigonometry to turn the angle into a unit vector
+			vec = new Vector3(Mathf.Cos(theta),Mathf.Sin (theta), 0);
+			//multiply that unit vector by the elementRotDist
+			vec *= elementRotDist;
+			//raaise the element to waist height
+			vec.z = -0.5f;
+			el.lPos = vec;  // set the position of the Element_Sphere
+		}
 	}
 }
