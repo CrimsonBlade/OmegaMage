@@ -55,6 +55,7 @@
      <Compile Include="Assets\__Scripts\ProtoTools\PT_Scoreboard.cs" />
      <Compile Include="Assets\__Scripts\ProtoTools\PT_XMLReader.cs" />
      <Compile Include="Assets\__Scripts\ProtoTools\Utils.cs" />
+     <Compile Include="Assets\__Scripts\TapIndicator.cs" />
      <Compile Include="Assets\__Scripts\Tile.cs" />
      <None Include="Assets\__Scripts\ProtoTools\UnlitAlpha.shader" />
      <None Include="Assets\Resources\Rooms.xml" />
