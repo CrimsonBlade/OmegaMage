@@ -42,16 +42,25 @@
 -define:ENABLE_PROFILER
 -define:UNITY_EDITOR
 -define:UNITY_EDITOR_WIN
-Assets/_Prefabs/TapIndicator.cs
+Assets/__Scripts/AirGroundSpell.cs
 Assets/__Scripts/CameraFollow.cs
+Assets/__Scripts/Element.cs
+Assets/__Scripts/ElementInventoryButton.cs
+Assets/__Scripts/Enemy.cs
+Assets/__Scripts/EnemyBug.cs
+Assets/__Scripts/EnemySpiker.cs
+Assets/__Scripts/FireGroundSpell.cs
 Assets/__Scripts/LayoutTiles.cs
 Assets/__Scripts/Mage.cs
+Assets/__Scripts/Portal.cs
 Assets/__Scripts/ProtoTools/PT_FloatingScore.cs
 Assets/__Scripts/ProtoTools/PT_MonoBehaviour.cs
 Assets/__Scripts/ProtoTools/PT_Mover.cs
 Assets/__Scripts/ProtoTools/PT_Scoreboard.cs
 Assets/__Scripts/ProtoTools/PT_XMLReader.cs
 Assets/__Scripts/ProtoTools/Utils.cs
+Assets/__Scripts/TapIndicator.cs
 Assets/__Scripts/Tile.cs
+Assets/__Scripts/WaterGroundSpell.cs
 -r:"C:/Program Files (x86)/Unity/Editor/Data/Mono\lib/mono/unity\System.Runtime.Serialization.dll"
 -r:"C:/Program Files (x86)/Unity/Editor/Data/Mono\lib/mono/unity\System.Xml.Linq.dll"

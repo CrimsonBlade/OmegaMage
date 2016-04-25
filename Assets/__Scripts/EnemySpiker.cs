@@ -18,11 +18,16 @@ public class EnemySpiker : PT_MonoBehaviour, Enemy {
 
 	public float		speed = 5f;
 	public string		roomXMLString = "{";
+	
 
 	public bool 	____________________;
 
+
+
 	public Vector3		moveDir;
 	public Transform	characterTrans;
+
+
 
 	void Awake(){
 		characterTrans = transform.Find("CharacterTrans");
@@ -53,6 +58,7 @@ public class EnemySpiker : PT_MonoBehaviour, Enemy {
 	//this has the same structure as the damage method in EnemyBug
 	public void Damage (float amt, ElementType eT, bool damageOverTime = false){
 		//nothing damages the enemySpiker
+
 	}
 
 	void OnTriggerEnter(Collider other){
@@ -69,5 +75,18 @@ public class EnemySpiker : PT_MonoBehaviour, Enemy {
 
 			}
 		}
+
+		if (go.tag == "Water") {
+			this.speed = speed / 2f;
+		}
+
+	}
+
+	void OnTriggerExit(Collider other){
+		GameObject go = Utils.FindTaggedParent (other.gameObject);
+		if (go.tag == "Water") {
+			speed = 5f;	
+		}
+
 	}
 }

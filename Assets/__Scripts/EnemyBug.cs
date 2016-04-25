@@ -116,6 +116,17 @@ public class EnemyBug : PT_MonoBehaviour, Enemy {
 			damageDict[eT] = Mathf.Max (amt, damageDict[eT]);
 			break;
 
+		case ElementType.air:
+			//only the max damage from fire source addects this instance
+			damageDict[eT] = Mathf.Max (amt, damageDict[eT]);
+			break;
+
+		case ElementType.water:
+			//only the max damage from fire source addects this instance
+			damageDict[eT] = Mathf.Max (amt, damageDict[eT]);
+			this.speed = speed/2;
+			break;
+
 		case ElementType.earth:
 			//earth does not damage bugs
 			break;

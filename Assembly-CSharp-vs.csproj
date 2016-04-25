@@ -46,6 +46,7 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\__Scripts\AirGroundSpell.cs" />
      <Compile Include="Assets\__Scripts\CameraFollow.cs" />
      <Compile Include="Assets\__Scripts\Element.cs" />
      <Compile Include="Assets\__Scripts\ElementInventoryButton.cs" />
@@ -64,6 +65,7 @@
      <Compile Include="Assets\__Scripts\ProtoTools\Utils.cs" />
      <Compile Include="Assets\__Scripts\TapIndicator.cs" />
      <Compile Include="Assets\__Scripts\Tile.cs" />
+     <Compile Include="Assets\__Scripts\WaterGroundSpell.cs" />
      <None Include="Assets\__Scripts\ProtoTools\UnlitAlpha.shader" />
      <None Include="Assets\Resources\Rooms.xml" />
  <Reference Include="UnityEngine.UI">
