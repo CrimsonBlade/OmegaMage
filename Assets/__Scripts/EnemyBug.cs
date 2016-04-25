@@ -2,7 +2,20 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class EnemyBug : PT_MonoBehaviour {
+public class EnemyBug : PT_MonoBehaviour, Enemy {
+	[SerializeField]
+	private float		touchDmg = 1;
+	public float		touchDamage{
+		get{return(touchDmg);}
+		set{touchDmg = value;}
+	}
+	//the pos Property is alreay implemented in PT_MonoBehaviour
+	public string		typeString{
+		get{return(roomXMLString);}
+		set{roomXMLString = value;}
+	}
+
+	public string		roomXMLString;
 	public float 		speed = 0.5f;
 	public float		health = 10;
 	public float		damageScale = 0.8f;

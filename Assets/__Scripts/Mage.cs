@@ -432,10 +432,21 @@ public class Mage : PT_MonoBehaviour {
 		//see if its an EnemyBug
 		EnemyBug bug = coll.gameObject.GetComponent<EnemyBug> ();
 		// if otherGO is an EnemyBug, pass otherGO to CollisionDamage()
-		if (bug != null) CollisionDamage (otherGO);
+		//which will interpret it as an Enemy
+		if (bug != null) CollisionDamage (bug);
+		//if (bug != null) CollisionDamage (otherGO);  no longer needed
 	}
 
-	void CollisionDamage (GameObject enemy){
+	void OnTriggerEnter(Collider other){
+		EnemySpiker spiker = other.GetComponent<EnemySpiker> ();
+		if (spiker != null) {
+			// CollisionDamage() will see spiker as an enemy CollisionDamage(spiker)
+			CollisionDamage(spiker);
+			//CollisionDamage(other.gameObject);	no longer needed
+		}
+	}
+
+	void CollisionDamage (Enemy enemy){
 
 		//don't take damage if your're already invincible
 		if (invincibleBool) return;
@@ -444,7 +455,7 @@ public class Mage : PT_MonoBehaviour {
 		StopWalking ();
 		ClearInput ();
 
-		health -= 1; //take 1 point of damage (for now)
+		health -= enemy.touchDamage; //take damage based on enemy type
 		if (health <= 0) {
 			Die();
 			return;
@@ -452,7 +463,7 @@ public class Mage : PT_MonoBehaviour {
 
 		damageTime = Time.time;
 		knockbackBool = true;
-		knockbackDir = (pos - enemy.transform.position).normalized;
+		knockbackDir = (pos - enemy.pos).normalized;
 		invincibleBool = true;
 	}
 

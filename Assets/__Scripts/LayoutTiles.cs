@@ -9,6 +9,13 @@ public class TileTex{
 	public Texture2D tex;
 }
 
+[System.Serializable]
+public class EnemyDef{
+	//this class enables us to define various enemies
+	public string		str;
+	public GameObject	go;
+}
+
 public class LayoutTiles : MonoBehaviour {
 	static public LayoutTiles S;
 
@@ -18,6 +25,7 @@ public class LayoutTiles : MonoBehaviour {
 	public GameObject tilePrefab; //Prefab for all Tiles
 	public TileTex[]  tileTextures; //A list of named textures for Tiles
 	public GameObject portalPrefab; //prefab for the portals between rooms
+	public EnemyDef[] enemyDefinitions; //prefabs for Enemies
 
 	public bool _________________;
 
@@ -206,6 +214,18 @@ public class LayoutTiles : MonoBehaviour {
 					p.toRoom = rawType;
 					portals.Add(p);
 					break;
+
+				default:
+					//try to see if there's an Enemy for that letter
+					Enemy en = EnemyFactory(rawType);
+					if(en == null) break; // if there's not one, break out
+					//set uo the new enemy
+					en.pos = ti.pos;
+					//make en a child of tileAnchor so it's deleted when the 
+					// next room is loaded
+					en.transform.parent = tileAnchor;
+					en.typeString = rawType;
+					break;
 				}
 
 				//more to come here...
@@ -237,5 +257,27 @@ public class LayoutTiles : MonoBehaviour {
 
 		// finaly assign the roomNumber
 		roomNumber = rNumStr;
+	}
+
+	public Enemy EnemyFactory(string sType){
+		//see if there's an EnemyDef with that sType
+		GameObject prefab = null;
+		foreach (EnemyDef ed in enemyDefinitions) {
+			if (ed.str == sType){
+				prefab = ed.go;
+				break;
+			}	
+		}
+		if (prefab == null) {
+			Utils.tr ("LayoutTiles.EnemyFactory()","No EnemyDef for:"+sType);
+			return(null);
+		}
+		GameObject go = Instantiate (prefab) as GameObject;
+
+		// the generic form of GetComponent (with the <>) won't work for 
+		// interfaces like Enemy, so we must use this form instead
+		Enemy en = (Enemy)go.GetComponent (typeof(Enemy));
+
+		return(en);
 	}
 }

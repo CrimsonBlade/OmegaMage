@@ -49,7 +49,9 @@
      <Compile Include="Assets\__Scripts\CameraFollow.cs" />
      <Compile Include="Assets\__Scripts\Element.cs" />
      <Compile Include="Assets\__Scripts\ElementInventoryButton.cs" />
+     <Compile Include="Assets\__Scripts\Enemy.cs" />
      <Compile Include="Assets\__Scripts\EnemyBug.cs" />
+     <Compile Include="Assets\__Scripts\EnemySpiker.cs" />
      <Compile Include="Assets\__Scripts\FireGroundSpell.cs" />
      <Compile Include="Assets\__Scripts\LayoutTiles.cs" />
      <Compile Include="Assets\__Scripts\Mage.cs" />
