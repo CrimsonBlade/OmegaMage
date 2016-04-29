@@ -262,6 +262,10 @@ public class Mage : PT_MonoBehaviour {
 			WalkTo (lastMouseInfo.loc); //walk to the latest mouseInfo pos
 			ShowTap (lastMouseInfo.loc); //show where the player tapped
 			break;
+		case "Enemy":
+			//allow spell to target the enemy
+			tapCastSpell();
+			break;
 		}
 	}
 
@@ -331,6 +335,7 @@ public class Mage : PT_MonoBehaviour {
 
 		case ElementType.earth:
 			GameObject earthGO;
+
 			foreach(Vector3 pt in linePts){//for each vector3 in linePts...
 				//...create an instance of earthGroundSpellPrefab
 				earthGO = Instantiate(earthGroundSpellPrefab) as GameObject;
@@ -338,7 +343,6 @@ public class Mage : PT_MonoBehaviour {
 				earthGO.transform.position = pt;
 			}
 			break;
-
 
 		case ElementType.water:
 			GameObject waterGO;
@@ -349,11 +353,42 @@ public class Mage : PT_MonoBehaviour {
 				waterGO.transform.position = pt;
 			}
 			break;
+
 		}
 
 		//clear the selectedElements; they are consumed by the spell
 		ClearElements ();
 	}
+
+	//tap / cast spell on enemy
+	void tapCastSpell (){
+				//there is not a no-element tap spell so return
+				if (selectedElements.Count == 0)
+						return;
+
+				//because this version of the prototype only allows a single element to 
+				//  be selected, we can use that 0th element to pick the spell.
+				switch (selectedElements [0].type) {
+				case ElementType.earth:
+						GameObject earthGO;
+					
+						earthGO = Instantiate (earthGroundSpellPrefab) as GameObject;
+						earthGO.transform.parent = spellAnchor;
+			earthGO.transform.position = lastMouseInfo.loc;					
+						break;
+
+				case ElementType.air:
+						GameObject airGO;
+						foreach (Vector3 pt in linePts) {//for each vector3 in linePts...
+								//...create an instance of airGroundSpellPrefab
+								airGO = Instantiate (airGroundSpellPrefab) as GameObject;
+								airGO.transform.parent = spellAnchor;
+								airGO.transform.position = pt;
+						}
+						break;
+				}
+		}
+		
 
 	//walk to a specific position. the position.z is always 0
 	public void WalkTo(Vector3 xTarget){

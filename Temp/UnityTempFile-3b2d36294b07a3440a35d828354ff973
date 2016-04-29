@@ -42,9 +42,9 @@
 -define:UNITY_EDITOR_WIN
 -define:UNITY_TEAM_LICENSE
 -define:UNITY_PRO_LICENSE
-Assets/_Prefabs/NewBehaviourScript.cs
 Assets/__Scripts/AirGroundSpell.cs
 Assets/__Scripts/CameraFollow.cs
+Assets/__Scripts/EarthGroundSpell.cs
 Assets/__Scripts/Element.cs
 Assets/__Scripts/ElementInventoryButton.cs
 Assets/__Scripts/Enemy.cs

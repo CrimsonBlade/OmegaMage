@@ -44,6 +44,7 @@
 -define:UNITY_PRO_LICENSE
 Assets/__Scripts/AirGroundSpell.cs
 Assets/__Scripts/CameraFollow.cs
+Assets/__Scripts/EarthGroundSpell.cs
 Assets/__Scripts/Element.cs
 Assets/__Scripts/ElementInventoryButton.cs
 Assets/__Scripts/Enemy.cs
