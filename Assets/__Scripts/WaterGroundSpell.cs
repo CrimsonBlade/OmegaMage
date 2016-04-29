@@ -6,7 +6,7 @@ public class WaterGroundSpell : PT_MonoBehaviour {
 	public float 		duration = 2;  // Lifetime of this GameObject
 	public float		durationVariance = 0.5f;
 	// ^ this allows the duration to range from 3.5 to 4.5
-	public float		fadeTime = 1f; //length of time to fade
+	public float		fadeTime = .1f; //length of time to fade
 	public float		timeStart;     //birth time of this GameObject
 	public float 		damagePerSecond = 5;
 	// Use this for initialization
