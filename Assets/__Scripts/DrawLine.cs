@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
-
+//code posted by jakovd to unities forms
+//http://answers.unity3d.com/questions/870982/draw-a-line-between-point-and-mouse.html
 
 public class DrawLine : MonoBehaviour {
 	

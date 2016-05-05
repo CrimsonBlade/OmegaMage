@@ -424,6 +424,7 @@ public class Mage : PT_MonoBehaviour {
 			airGO = Instantiate (airGroundSpellPrefab) as GameObject;
 			airGO.transform.parent = spellAnchor;
 			airGO.transform.position = lastMouseInfo.loc; 
+			StopWalking();
 						break;
 				}
 		}

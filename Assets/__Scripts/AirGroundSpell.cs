@@ -3,7 +3,7 @@ using System.Collections;
 
 public class AirGroundSpell : PT_MonoBehaviour {
 
-	public float 		duration = .5f;  // Lifetime of this GameObject
+	public float 		duration = 1f;  // Lifetime of this GameObject
 	public float		durationVariance = 0f;
 	// ^ this allows the duration to range from 
 	public float		fadeTime = 0f; //length of time to fade
