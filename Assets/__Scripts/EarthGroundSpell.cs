@@ -3,12 +3,12 @@ using System.Collections;
 
 public class EarthGroundSpell : PT_MonoBehaviour {
 
-	public float 		duration = 4;  // Lifetime of this GameObject
-	public float		durationVariance = 0.5f;
+	public float 		duration = 2;  // Lifetime of this GameObject
+	public float		durationVariance = 0f;
 	// ^ this allows the duration to range from 3.5 to 4.5
-	public float		fadeTime = 1f; //length of time to fade
+	public float		fadeTime = 0f; //length of time to fade
 	public float		timeStart;     //birth time of this GameObject
-	public float 		damagePerSecond = 1;
+	public float 		damagePerSecond = 10;
 	// Use this for initialization
 	void Start () {
 		timeStart = Time.time;

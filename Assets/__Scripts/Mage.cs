@@ -131,6 +131,8 @@ public class Mage : PT_MonoBehaviour {
 		//find whether the mouse button 0 was pressed or released this frame
 		bool b0Down = Input.GetMouseButtonDown (0);
 		bool b0Up = Input.GetMouseButtonUp (0);
+		bool b1Down = Input.GetMouseButtonDown (1);
+		bool b1Up = Input.GetMouseButtonUp (1);
 
 		//handle all input here (except for Inventory buttons)
 		/*
@@ -148,7 +150,7 @@ public class Mage : PT_MonoBehaviour {
 		//this is handled as an if statement instead of switch because a tap
 		// can sometimes happen within a single frame
 		if (mPhase == MPhase.idle) {//if the mouse is idle
-			if(b0Down && inActiveArea){
+			if((b0Down && inActiveArea) || (b1Down && inActiveArea)){
 				mouseInfos.Clear (); //clear the mouseInfos
 				AddMouseInfo();		//and add a first MouseInfo
 
@@ -181,11 +183,15 @@ public class Mage : PT_MonoBehaviour {
 					mPhase = MPhase.drag;
 				}
 			}
+			else if (b1Up){
+				RightMouseButtonTap();
+				mPhase = MPhase.idle;
+			}
 		}
 
 		if(mPhase == MPhase.drag){  //if the mouse is being dragged
 			AddMouseInfo();
-			if (b0Up){
+			if (b0Up || b1Up){
 				// the mouse button was released
 				MouseDragUp();
 				mPhase = MPhase.idle;
@@ -266,8 +272,28 @@ public class Mage : PT_MonoBehaviour {
 			//allow spell to target the enemy
 			tapCastSpell();
 			break;
+
 		}
 	}
+
+	void RightMouseButtonTap()
+	{
+		if (DEBUG)print ("Mage.MouseRightTap()");
+		switch (actionStartTag) {
+		case "Mage":
+			break;
+
+		case "Ground" :
+
+			//if(selectedElements[0].type == ElementType.air)
+			//{
+				tapCastSpell();
+				
+				//} 
+			break;
+			}	
+		}
+
 
 	void MouseDrag(){
 		// mouse is being dragged across something 
@@ -374,17 +400,30 @@ public class Mage : PT_MonoBehaviour {
 					
 						earthGO = Instantiate (earthGroundSpellPrefab) as GameObject;
 						earthGO.transform.parent = spellAnchor;
-			earthGO.transform.position = lastMouseInfo.loc;					
+						earthGO.transform.position = lastMouseInfo.loc;					
 						break;
 
 				case ElementType.air:
 						GameObject airGO;
-						foreach (Vector3 pt in linePts) {//for each vector3 in linePts...
+						/*foreach (Vector3 pt in linePts) {//for each vector3 in linePts...
 								//...create an instance of airGroundSpellPrefab
 								airGO = Instantiate (airGroundSpellPrefab) as GameObject;
 								airGO.transform.parent = spellAnchor;
-								airGO.transform.position = pt;
-						}
+				//linePts.Add(Mage.S.transform.position);
+				//linePts.Add(lastMouseInfo.loc);
+				//AddPointToLiner(mouseInfos[Mage.S.transform.position].loc);				
+				//AddPointToLiner(mouseInfos[lastMouseInfo].loc);
+				//airGO.transform.position = pt;
+
+				//this is a ground spell, so we need to draw a line
+				//AddPointToLiner(mouseInfos[mouseInfos.Count-1].loc);
+				// ^ add the most recent MouseInfo.loc to liner 
+
+
+						}*/
+			airGO = Instantiate (airGroundSpellPrefab) as GameObject;
+			airGO.transform.parent = spellAnchor;
+			airGO.transform.position = lastMouseInfo.loc; 
 						break;
 				}
 		}
