@@ -164,10 +164,14 @@ public class Mage : PT_MonoBehaviour {
 
 		if (mPhase == MPhase.down){  //if the mouse is down
 			AddMouseInfo();			//add a MouseInfo for this frame
-			if(b0Up){				//the mouse button was released
+			if(b0Up || b0Down){				//the mouse button was released
 				MouseTap();			//this was a tap
 				mPhase = MPhase.idle;
-			}else if (Time.time - mouseInfos[0].time > mTapTime){
+			}else if (b1Up){
+				RightMouseButtonTap();
+				mPhase = MPhase.idle;
+			}
+			else if (Time.time - mouseInfos[0].time > mTapTime){
 				//if it's been down longer than a tap, this may be a drag, but
 				// to be a drag, it must also have moved a certian number of
 				// pixels on screen.
@@ -179,19 +183,18 @@ public class Mage : PT_MonoBehaviour {
 
 				//however, drag will immediately start after mTapTime if there
 				//are no elements selected
-				if (selectedElements.Count == 0){
-					mPhase = MPhase.drag;
+				if (selectedElements.Count == 0 && (b0Up || b0Down)){
+					//mPhase = MPhase.drag;
+					MouseTap();
+					mPhase = MPhase.idle;
 				}
 			}
-			else if (b1Up){
-				RightMouseButtonTap();
-				mPhase = MPhase.idle;
-			}
+
 		}
 
 		if(mPhase == MPhase.drag){  //if the mouse is being dragged
 			AddMouseInfo();
-			if (b0Up || b1Up){
+			if ( b1Up){
 				// the mouse button was released
 				MouseDragUp();
 				mPhase = MPhase.idle;
@@ -290,6 +293,9 @@ public class Mage : PT_MonoBehaviour {
 				tapCastSpell();
 				
 				//} 
+			break;
+		case "Enemy":
+			tapCastSpell();
 			break;
 			}	
 		}

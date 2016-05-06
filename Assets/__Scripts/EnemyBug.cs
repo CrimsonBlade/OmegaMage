@@ -175,6 +175,8 @@ public class EnemyBug : PT_MonoBehaviour, Enemy {
 		}
 	}
 
+
+
 	//making Die() a seperate function allows us to add thing later like
 	// different death animations, dropping sothing for player, etc.
 	public void Die(){
