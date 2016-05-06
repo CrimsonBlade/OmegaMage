@@ -296,6 +296,7 @@ public class Mage : PT_MonoBehaviour {
 			break;
 		case "Enemy":
 			tapCastSpell();
+			enemyOnlySpell();
 			break;
 			}	
 		}
@@ -410,7 +411,8 @@ public class Mage : PT_MonoBehaviour {
 						break;
 
 				case ElementType.air:
-						GameObject airGO;
+
+						
 						/*foreach (Vector3 pt in linePts) {//for each vector3 in linePts...
 								//...create an instance of airGroundSpellPrefab
 								airGO = Instantiate (airGroundSpellPrefab) as GameObject;
@@ -427,14 +429,27 @@ public class Mage : PT_MonoBehaviour {
 
 
 						}*/
-			airGO = Instantiate (airGroundSpellPrefab) as GameObject;
-			airGO.transform.parent = spellAnchor;
-			airGO.transform.position = lastMouseInfo.loc; 
-			StopWalking();
+
+				break;
+				}
+		}
+	void enemyOnlySpell (){
+				//there is not a no-element tap spell so return
+				if (selectedElements.Count == 0)
+						return;
+		
+				//because this version of the prototype only allows a single element to 
+				//  be selected, we can use that 0th element to pick the spell.
+				switch (selectedElements [0].type) {
+				case ElementType.air:
+						GameObject airGO;
+						airGO = Instantiate (airGroundSpellPrefab) as GameObject;
+						airGO.transform.parent = spellAnchor;
+						airGO.transform.position = lastMouseInfo.loc; 
+						StopWalking ();
 						break;
 				}
 		}
-		
 
 	//walk to a specific position. the position.z is always 0
 	public void WalkTo(Vector3 xTarget){
